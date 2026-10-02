@@ -4,3 +4,6 @@ dist/
 *.app
 .DS_Store
 .pi/
+.codex/
+.claude/
+.cursor/
