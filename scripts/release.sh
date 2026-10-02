@@ -44,10 +44,20 @@ cp build/bin/dbhydrate "$DIST/dbhydrate"
 chmod +x "$DIST/dbhydrate"
 codesign --force --sign - --timestamp=none "$DIST/dbhydrate"
 
-ditto -c -k --keepParent build/DBHydrate.app "$DIST/DBHydrate.app.zip"
+# --norsrc/--noextattr: keep AppleDouble ._ resource forks out of the archive.
+# Unzipping them into the bundle breaks the code signature seal.
+ditto -c -k --keepParent --norsrc --noextattr \
+	build/DBHydrate.app "$DIST/DBHydrate.app.zip"
 
 echo "==> smoke test"
 "$DIST/dbhydrate" --help >/dev/null
+
+# The zip must restore to a bundle that still satisfies its signature.
+VERIFY="$(mktemp -d)"
+trap 'rm -rf "$VERIFY"' EXIT
+ditto -x -k "$DIST/DBHydrate.app.zip" "$VERIFY"
+codesign --verify --deep "$VERIFY/DBHydrate.app"
+echo "    app bundle signature verifies after unzip"
 
 ( cd "$DIST" && shasum -a 256 dbhydrate DBHydrate.app.zip > SHA256SUMS )
 cat "$DIST/SHA256SUMS"
@@ -69,7 +79,7 @@ Download, then either:
   Or right-click the file in Finder and choose Open.
 
 - **App bundle**: unzip \`DBHydrate.app.zip\` and open \`DBHydrate.app\` from
-  Finder (same first-launch prompt, right-click \u2192 Open).
+  Finder (same first-launch prompt: right-click, then Open).
 
 This release is ad-hoc signed, not notarized with an Apple Developer ID.
 The tool needs Full Disk Access for your Dropbox folder and network access.
