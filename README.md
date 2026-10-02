@@ -3,16 +3,47 @@
 Download online-only files from legacy Dropbox Smart Sync on macOS without
 opening windows.
 
-Requires macOS 13+ and the Xcode command line tools. No third-party dependencies.
+Requires macOS 13+. No third-party dependencies.
 Dropbox File Provider installations and files excluded by Selective Sync are
 unsupported.
 
-## Build and use
+## Install
+
+Grab the latest release, no build required:
 
 ```console
-./scripts/build.sh
-./build/bin/dbhydrate --dry-run ~/Dropbox/some-project
-./build/bin/dbhydrate ~/Dropbox/some-project
+gh release download --repo tmonk/dropbox-hydrate --pattern dbhydrate
+chmod +x dbhydrate
+xattr -d com.apple.quarantine dbhydrate     # see "First launch" below
+```
+
+Then move `dbhydrate` anywhere on your `PATH`, such as `/usr/local/bin`, or
+call it by path. Each release also ships a zipped `DBHydrate.app` bundle: unzip
+it and open it from Finder, or install it in `/Applications`.
+
+Releases are built per architecture (currently Apple silicon). Pick the asset
+matching your Mac.
+
+### First launch
+
+These releases are ad-hoc signed, not notarized with an Apple Developer ID, so
+macOS blocks the first launch of a downloaded file. Clear the quarantine
+attribute once:
+
+```console
+xattr -d com.apple.quarantine dbhydrate
+```
+
+Or right-click the file (or `DBHydrate.app`) in Finder and choose **Open**.
+
+Each release includes a `SHA256SUMS` file; check it if you want to verify the
+download.
+
+## Use
+
+```console
+dbhydrate --dry-run ~/Dropbox/some-project
+dbhydrate ~/Dropbox/some-project
 ```
 
 Pass one or more files or folders. Folders are scanned recursively; `--dry-run`
@@ -26,7 +57,7 @@ counts files needing download without requesting them.
 | `--stats PATH` | Create a new JSON report; refuses an existing file |
 | `-v, --verbose` | Show each file's result |
 
-Run `./build/bin/dbhydrate --help` for all options.
+Run `dbhydrate --help` for all options.
 
 The default Dropbox folder is `~/Dropbox`. Set `DBHYDRATE_DROPBOX_ROOT` for a
 different location. Symlinks and paths outside that folder are refused.

@@ -7,6 +7,8 @@ cd "$ROOT"
 
 BUNDLE_ID="com.dbhydrate.DBHydrate"
 APP="$ROOT/build/DBHydrate.app"
+VERSION="${DBHYDRATE_VERSION:-0.1.0}"
+BUILD_NUMBER="${DBHYDRATE_BUILD_NUMBER:-1}"
 
 echo "==> swift build -c release --product dbhydrate"
 swift build -c release --product dbhydrate
@@ -28,8 +30,8 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 	<key>CFBundleInfoDictionaryVersion</key>      <string>6.0</string>
 	<key>CFBundleName</key>                       <string>DBHydrate</string>
 	<key>CFBundlePackageType</key>                <string>APPL</string>
-	<key>CFBundleShortVersionString</key>         <string>0.1.0</string>
-	<key>CFBundleVersion</key>                    <string>1</string>
+	<key>CFBundleShortVersionString</key>         <string>$VERSION</string>
+	<key>CFBundleVersion</key>                    <string>$BUILD_NUMBER</string>
 	<key>LSMinimumSystemVersion</key>             <string>13.0</string>
 
 	<!-- Agent app: never appears in the Dock, never opens a window, never takes

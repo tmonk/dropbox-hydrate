@@ -15,7 +15,7 @@ Specify an existing folder with `--sandbox`. All targets must be inside it.
 Eviction defaults to a preview:
 
 ```console
-./build/bin/dbhydrate evict --sandbox ~/Dropbox/project ~/Dropbox/project/files
+dbhydrate evict --sandbox ~/Dropbox/project ~/Dropbox/project/files
 ```
 
 Files without Dropbox metadata and existing placeholders are skipped. Symlinks,
@@ -26,7 +26,7 @@ hard links and special files are refused.
 Add `--yes` to remove local content:
 
 ```console
-./build/bin/dbhydrate evict --sandbox ~/Dropbox/project --yes \
+dbhydrate evict --sandbox ~/Dropbox/project --yes \
   --manifest /tmp/new-eviction.jsonl ~/Dropbox/project/files
 ```
 
@@ -42,7 +42,7 @@ Keep the journal until undo succeeds.
 Use the same sandbox and the journal from eviction:
 
 ```console
-./build/bin/dbhydrate evict --sandbox ~/Dropbox/project \
+dbhydrate evict --sandbox ~/Dropbox/project \
   --undo /tmp/new-eviction.jsonl
 ```
 
@@ -52,4 +52,4 @@ preserved and reported as failures. Missing files, incomplete downloads and
 hash mismatches also fail. Keep the journal and retry when Dropbox is available.
 
 Add `--dry-run` to preview undo without requesting downloads. Run
-`./build/bin/dbhydrate --help` for time limits and other options.
+`dbhydrate --help` for time limits and other options.
