@@ -100,12 +100,19 @@ fi
 git push origin "$TAG"
 
 echo "==> publishing GitHub release $TAG"
-gh release create "$TAG" \
-	--repo "$REPO" \
-	--target main \
-	--title "dbhydrate $VERSION" \
-	--notes-file "$NOTES" \
-	"$DIST/dbhydrate" "$DIST/DBHydrate.app.zip" "$DIST/SHA256SUMS"
+if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+	echo "    release $TAG exists; replacing its assets"
+	gh release upload "$TAG" --repo "$REPO" --clobber \
+		"$DIST/dbhydrate" "$DIST/DBHydrate.app.zip" "$DIST/SHA256SUMS"
+	gh release edit "$TAG" --repo "$REPO" --title "dbhydrate $VERSION" --notes-file "$NOTES"
+else
+	gh release create "$TAG" \
+		--repo "$REPO" \
+		--target main \
+		--title "dbhydrate $VERSION" \
+		--notes-file "$NOTES" \
+		"$DIST/dbhydrate" "$DIST/DBHydrate.app.zip" "$DIST/SHA256SUMS"
+fi
 
 echo
 echo "released: $REPO/releases/tag/$TAG"
